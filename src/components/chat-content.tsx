@@ -8,6 +8,7 @@ import { useMutationHandler } from '@/hooks/use-mutation-handler';
 import { ChatHeader } from '@/components/chat-header';
 import { MessageItem } from '@/components/message-item';
 import { ChatFooter } from '@/components/chat-footer';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   chatId,
@@ -51,9 +52,8 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
       case 2:
         return `${seenUsers[0]} and ${seenUsers[1]} seen`;
       default:
-        return `${seenUsers[0]}, ${seenUsers[1]} and ${
-          seenUsers.length - 2
-        } others seen`;
+        return `${seenUsers[0]}, ${seenUsers[1]} and ${seenUsers.length - 2
+          } others seen`;
     }
   };
 
@@ -76,24 +76,26 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
         chatId={chatId}
         status={status}
       />
-
-      <div className='p-3 flex flex-1 flex-col-reverse gap-2'>
-        {messages?.map((message, index) => (
-          <MessageItem
-            key={message._id}
-            content={message.content}
-            createdAt={message._creationTime}
-            lastByUser={messages[index - 1]?.senderId === message.senderId}
-            fromCurrentUser={message.isCurrentUser}
-            senderImage={message.senderImage}
-            senderName={message.senderName}
-            type={message.type}
-            seen={
-              message.isCurrentUser ? getSeenMessage(message._id) : undefined
-            }
-          />
-        ))}
-      </div>
+      <ScrollArea className='w-full'>
+        <div className='p-3 flex flex-1 flex-col-reverse gap-2 overflow-y-auto'>
+          {messages?.map((message, index) => (
+            <MessageItem
+              key={message._id}
+              content={message.content}
+              createdAt={message._creationTime}
+              lastByUser={messages[index - 1]?.senderId === message.senderId}
+              fromCurrentUser={message.isCurrentUser}
+              senderImage={message.senderImage}
+              senderName={message.senderName}
+              type={message.type}
+              seen={
+                message.isCurrentUser ? getSeenMessage(message._id) : undefined
+              }
+            />
+          ))}
+        </div>
+        <ScrollBar orientation='horizontal' />
+      </ScrollArea>
 
       <ChatFooter chatId={chatId} currentUserId={user?.id!} />
     </div>

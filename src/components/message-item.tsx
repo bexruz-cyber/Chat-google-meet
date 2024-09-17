@@ -43,19 +43,15 @@ export const MessageItem: FC<MessageItemProps> = ({
       >
         <div
           className={cn(
-            'px-3 py-1 flex flex-col space-x-2 items-center justify-between rounded-lg max-w-[80%]',
+            'px-3 py-1 bg-secondary text-secondary-foreground flex flex-col space-x-2 items-center justify-between rounded-lg max-w-[80%]',
             {
-              'bg-blue-700 text-primary-foreground':
-                fromCurrentUser && type === 'text',
-              'bg-secondary text-secondary-foreground':
-                !fromCurrentUser && type === 'text',
               'rounded-br-none': !lastByUser && fromCurrentUser,
               'rounded-bl-none': !lastByUser && !fromCurrentUser,
             }
           )}
         >
           {type == 'text' && (
-            <p className='text-wrap break-words whitespace-pre-wrap break-all'>
+            <p className='text-wrap bg-secondary text-secondary-foreground break-words whitespace-pre-wrap break-all'>
               {content}
             </p>
           )}
@@ -91,9 +87,9 @@ export const MessageItem: FC<MessageItemProps> = ({
           )}
 
           <p
-            className={cn('text-xs flex w-full my-1', {
-              'text-primary-foreground justify-end': fromCurrentUser,
-              'text-secondary-foreground justify-start': !fromCurrentUser,
+            className={cn('text-xs flex w-full my-1 bg-secondary text-secondary-foreground', {
+              'justify-end': fromCurrentUser,
+              'justify-start': !fromCurrentUser,
               'dark:text-white text-black':
                 type === 'audio' || type === 'image' || type === 'pdf',
             })}
