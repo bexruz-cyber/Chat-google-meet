@@ -93,9 +93,9 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
               senderName={message.senderName}
               type={message.type}
               seen={message.isCurrentUser ? getSeenMessage(message._id) : undefined}
-            />
-          ))}
-          <div ref={messagesEndRef} />
+              />
+              ))}
+              <div ref={messagesEndRef} />
         </div>
         <ScrollBar orientation='horizontal' />
       </ScrollArea>
