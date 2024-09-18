@@ -33,7 +33,6 @@ export const get = query({
         return conversation;
       })
     );
-
     const conversationWithDetails = await Promise.all(
       conversations.map(async (conversation, index) => {
         const allConversationMemberships = await ctx.db
