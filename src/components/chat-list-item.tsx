@@ -21,7 +21,6 @@ export const ChatListItem: FC<ChatListItemProps> = ({
   chatId,
   isActive,
   lastMessageContent,
-  lastMessageSender,
   name,
   timestamp,
   unseenMessageCount,

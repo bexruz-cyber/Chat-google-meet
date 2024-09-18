@@ -1,4 +1,4 @@
-import { Ban, Phone, Scroll, Video } from 'lucide-react';
+import { Ban, Phone, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useQuery } from 'convex/react';
 import { FC, useState } from 'react';
@@ -148,14 +148,14 @@ export const ProfileSheet: FC<ProfileSheetProps> = ({
         <p className='font-bold text-lg my-5'>Shared Media</p>
         {chatFiles?.length ? (
           <ScrollArea className='rounded-md border max-w-80'>
-            <div className='flex space-x-4 p-4'>
+            <div className='flex flex-col  p-4'>
               {chatFiles.map(({ _id, type, content }) => (
-                <div key={_id} className='w-[200px] rounded-xl overflow-hidden'>
+                <div key={_id} className='h-auto my-4 rounded-xl overflow-hidden'>
                   <ChatTypeContent type={type} content={content} />
                 </div>
               ))}
             </div>
-            <ScrollBar orientation='horizontal' />
+            <ScrollBar orientation='vertical' />
           </ScrollArea>
         ) : (
           <p>No media shared</p>

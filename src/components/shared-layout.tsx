@@ -1,7 +1,6 @@
 'use client';
 
 import { FC, ReactNode, useEffect, useState } from 'react';
-
 import {
   ResizableHandle,
   ResizablePanel,
@@ -9,10 +8,17 @@ import {
 } from '@/components/ui/resizable';
 import { useSidebarWidth } from '@/hooks/use-sidebar-width';
 
+// Define the type for SidebarProps if you have specific props for your SidebarComponent
+interface SidebarProps {
+  // Add your sidebar props here
+  title?: string;
+  onClick?: () => void;
+}
+
 type SharedLayoutProps = {
   children: ReactNode;
-  SidebarComponent: FC<any>;
-  SidebarProps?: any;
+  SidebarComponent: FC<SidebarProps>;
+  SidebarProps?: SidebarProps;
 };
 
 const SharedLayout: FC<SharedLayoutProps> = ({

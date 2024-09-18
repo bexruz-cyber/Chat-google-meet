@@ -25,7 +25,7 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
       ? [conversation.otherMember]
       : [];
 
-  const { mutate: markAsRead, state: _ } = useMutationHandler(
+  const { mutate: markAsRead, } = useMutationHandler(
     api.conversation.markAsRead
   );
 
@@ -71,7 +71,7 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
     <div className='h-full flex'>
       <ChatHeader
         chatAvatar={chatAvatar}
-        username={name!}
+        username={name || 'Unknown'}  // Provide a fallback value
         isGroup={conversation?.isGroup}
         chatId={chatId}
         status={status}
@@ -97,7 +97,7 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
         <ScrollBar orientation='horizontal' />
       </ScrollArea>
 
-      <ChatFooter chatId={chatId} currentUserId={user?.id!} />
+      <ChatFooter chatId={chatId} currentUserId={user?.id ?? ''} />
     </div>
   );
 };

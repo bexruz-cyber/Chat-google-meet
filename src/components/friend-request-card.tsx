@@ -23,9 +23,8 @@ export const FriendRequestCard: FC<FriendRequestCardProps> = ({
   imageUrl,
   username,
 }) => {
-    const { mutate: acceptRequest, state: acceptRequestState } = useMutationHandler(api.friend_reauest.accept)
-  const { mutate: declineRequest, state: declineRequestState } =
-    useMutationHandler(api.friend_reauest.decline);
+  const { mutate: acceptRequest, state: acceptRequestState } = useMutationHandler(api.friend_reauest.accept);
+  const { mutate: declineRequest, state: declineRequestState } = useMutationHandler(api.friend_reauest.decline);
 
   const handleDenyRequest = async (id: string) => {
     try {
@@ -72,7 +71,7 @@ export const FriendRequestCard: FC<FriendRequestCardProps> = ({
             acceptRequestState === 'loading' ||
             declineRequestState === 'loading'
           }
-          onCheckedChange={_ => handleAcceptRequest(id)}
+          onCheckedChange={() => handleAcceptRequest(id)}
         />
         <Button
           size='icon'
@@ -81,7 +80,7 @@ export const FriendRequestCard: FC<FriendRequestCardProps> = ({
             acceptRequestState === 'loading' ||
             declineRequestState === 'loading'
           }
-          onClick={_ => handleDenyRequest(id)}
+          onClick={() => handleDenyRequest(id)}
         >
           <X />
         </Button>

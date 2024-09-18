@@ -8,14 +8,14 @@ export const ChatTypeContent: FC<{
   content: string[];
 }> = ({ content, type }) => {
   return (
-    <AspectRatio ratio={1 / 1}>
+    <AspectRatio ratio={1 /.3}>
       {type === 'image' && (
         <Image
           src={content[0]}
           alt='file'
           width={450}
           height={235}
-          className='rounded-md object-cover'
+          className='rounded-md object-cover w-full h-full '
         />
       )}
 

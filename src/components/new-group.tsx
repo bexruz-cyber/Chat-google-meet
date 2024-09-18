@@ -121,54 +121,55 @@ export const NewGroup = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name='members'
-                  render={_ => (
-                    <FormItem>
-                      <FormLabel>Contacts</FormLabel>
-                      <FormControl>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger
-                            asChild
-                            disabled={unselectedContacts.length === 0}
-                          >
-                            <Button className='ml-4' variant='outline'>
-                              Select contacts
-                            </Button>
-                          </DropdownMenuTrigger>
+<FormField
+  control={form.control}
+  name='members'
+  render={() => ( // Removed unused "_"
+    <FormItem>
+      <FormLabel>Contacts</FormLabel>
+      <FormControl>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            disabled={unselectedContacts.length === 0}
+          >
+            <Button className='ml-4' variant='outline'>
+              Select contacts
+            </Button>
+          </DropdownMenuTrigger>
 
-                          <DropdownMenuContent className='w-full'>
-                            <DropdownMenuLabel>Contacts</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            {unselectedContacts.map(contact => (
-                              <DropdownMenuCheckboxItem
-                                key={contact._id}
-                                className='flex items-center gap-2 w-full p-2'
-                                onCheckedChange={checked => {
-                                  if (checked) {
-                                    form.setValue('members', [
-                                      ...members,
-                                      contact._id,
-                                    ]);
-                                  }
-                                }}
-                              >
-                                <Avatar className='h-8 w-8'>
-                                  <AvatarImage src={contact.imageUrl} />
-                                  <AvatarFallback>
-                                    {contact.username.slice(0, 2)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <h4 className='truncate'>{contact.username}</h4>
-                              </DropdownMenuCheckboxItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+          <DropdownMenuContent className='w-full'>
+            <DropdownMenuLabel>Contacts</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {unselectedContacts.map(contact => (
+              <DropdownMenuCheckboxItem
+                key={contact._id}
+                className='flex items-center gap-2 w-full p-2'
+                onCheckedChange={checked => {
+                  if (checked) {
+                    form.setValue('members', [
+                      ...members,
+                      contact._id,
+                    ]);
+                  }
+                }}
+              >
+                <Avatar className='h-8 w-8'>
+                  <AvatarImage src={contact.imageUrl} />
+                  <AvatarFallback>
+                    {contact.username.slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <h4 className='truncate'>{contact.username}</h4>
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </FormControl>
+    </FormItem>
+  )}
+/>
+
               </fieldset>
 
               {members.length ? (

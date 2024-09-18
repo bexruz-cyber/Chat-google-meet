@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ConvexError } from 'convex/values';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -58,8 +58,6 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
   const isDesktop = useIsDesktop();
   const { sidebarWidth } = useSidebarWidth();
   const { resolvedTheme } = useTheme();
-  const [typing, setTyping] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [imageOrPdf, setImageOrPdf] = useState<Blob | null>(null);
   const [imageOrPdfModalOpen, setImageOrPdfModalOpen] = useState(false);
   const [sendingFile, setSendingFile] = useState(false);
@@ -73,7 +71,7 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
 
   const createMessagehandler = async ({
     content,
-    
+
   }: z.infer<typeof ChatMessageSchema>) => {
     if (!content || content.length < 1) return;
     try {
@@ -92,9 +90,9 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
 
   const handleInputChange = async (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value, selectionStart } = e.target;
-  
+
     if (selectionStart !== null) form.setValue('content', value);
-  
+
     try {
       await axios.post('/api/type-indicator', {
         channel: chatId,
@@ -114,7 +112,7 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
       }
     }
   };
-  
+
 
   const handleImageUpload = async () => {
     const uniqueId = uuid();
@@ -220,11 +218,8 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
             <Picker
               theme={resolvedTheme}
               data={data}
-              onEmojiSelect={(emoji: any) =>
-                form.setValue(
-                  'content',
-                  `${form.getValues('content')}${emoji.native}`
-                )
+              onEmojiSelect={(emoji: { native: string }) =>
+                form.setValue('content', `${form.getValues('content')}${emoji.native}`)
               }
             />
           </PopoverContent>
@@ -251,7 +246,6 @@ export const ChatFooter: FC<ChatFooterProps> = ({ chatId, currentUserId }) => {
                   onChange={handleInputChange}
                   className='flex-grow bg-gray-200 dark:bg-gray-600 rounded-2xl resize-none px-4 p-2 ring-0 focus:ring-0 focus:outline-none outline-none'
                 />
-                {isTyping && <p className='text-xs ml-1'>typing...</p>}
               </>
             </FormControl>
           )}

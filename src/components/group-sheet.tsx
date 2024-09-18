@@ -1,5 +1,4 @@
-import { Ban, LogOut, Phone, Scroll, Trash2, Video } from 'lucide-react';
-import Link from 'next/link';
+import { LogOut, Phone, Trash2, Video } from 'lucide-react';
 import { useQuery } from 'convex/react';
 import { FC, useState } from 'react';
 import { api } from '../../convex/_generated/api';
@@ -21,7 +20,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMutationHandler } from '@/hooks/use-mutation-handler';
 import { ChatTypeContent } from '@/components/chat-type-content';
-import { pluralize } from '@/lib/utils';
 
 type ActionButtonProps = {
   Icon: FC;
