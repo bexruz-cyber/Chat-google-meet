@@ -1,9 +1,10 @@
 import { useMutation } from 'convex/react';
+import { FunctionReference } from 'convex/server';
 import { useCallback, useState } from 'react';
 
 type MutationState = 'idle' | 'loading' | 'success' | 'error';
 
-export const useMutationHandler = <T, P>(mutation: any) => {
+export const useMutationHandler = <T, P>(mutation: FunctionReference<"mutation">) => {
   const [state, setState] = useState<MutationState>('idle');
   const mutationFn = useMutation(mutation);
 
