@@ -3,13 +3,11 @@ import { Id } from '../../convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useUser } from '@clerk/clerk-react';
-
 import { useMutationHandler } from '@/hooks/use-mutation-handler';
 import { ChatHeader } from '@/components/chat-header';
 import { MessageItem } from '@/components/message-item';
 import { ChatFooter } from '@/components/chat-footer';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-
 export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   chatId,
 }) => {
@@ -17,7 +15,6 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   const messages = useQuery(api.messages.get, {
     id: chatId as Id<'conversations'>,
   });
-
   const members = conversation?.isGroup
     ? conversation?.otherMembers ?? []
     : conversation?.otherMember
@@ -25,7 +22,6 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
     : [];
 
   const { mutate: markAsRead } = useMutationHandler(api.conversation.markAsRead);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
