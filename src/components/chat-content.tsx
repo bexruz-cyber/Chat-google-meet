@@ -78,6 +78,7 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
       />
       <ScrollArea className='w-full flex-1'>
         <div className='p-3 flex flex-col-reverse gap-2 overflow-y-auto'>
+        <div ref={messagesEndRef} />
           {messages?.map((message, index) => (
             <MessageItem
               key={message._id}
@@ -91,7 +92,6 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
               seen={message.isCurrentUser ? getSeenMessage(message._id) : undefined}
             />
           ))}
-          <div ref={messagesEndRef} />
         </div>
         <ScrollBar orientation='horizontal' />
       </ScrollArea>
