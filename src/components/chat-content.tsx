@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { Id } from '../../convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -14,7 +14,6 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   chatId,
 }) => {
   const conversation = useQuery(api.conversation.get, { id: chatId });
-
   const messages = useQuery(api.messages.get, {
     id: chatId as Id<'conversations'>,
   });
@@ -22,12 +21,18 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   const members = conversation?.isGroup
     ? conversation?.otherMembers ?? []
     : conversation?.otherMember
-      ? [conversation.otherMember]
-      : [];
+    ? [conversation.otherMember]
+    : [];
 
-  const { mutate: markAsRead, } = useMutationHandler(
-    api.conversation.markAsRead
-  );
+  const { mutate: markAsRead } = useMutationHandler(api.conversation.markAsRead);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (messages && messages.length > 0) {
@@ -52,8 +57,7 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
       case 2:
         return `${seenUsers[0]} and ${seenUsers[1]} seen`;
       default:
-        return `${seenUsers[0]}, ${seenUsers[1]} and ${seenUsers.length - 2
-          } others seen`;
+        return `${seenUsers[0]}, ${seenUsers[1]} and ${seenUsers.length - 2} others seen`;
     }
   };
 
@@ -68,16 +72,16 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
   const status = conversation?.otherMember?.status || '';
 
   return (
-    <div className='h-full flex'>
+    <div className='h-full flex flex-col'>
       <ChatHeader
         chatAvatar={chatAvatar}
-        username={name || 'Unknown'}  // Provide a fallback value
+        username={name || 'Unknown'}
         isGroup={conversation?.isGroup}
         chatId={chatId}
         status={status}
       />
-      <ScrollArea className='w-full'>
-        <div className='p-3 flex flex-1 flex-col-reverse gap-2 overflow-y-auto'>
+      <ScrollArea className='w-full flex-1'>
+        <div className='p-3 flex flex-col-reverse gap-2 overflow-y-auto'>
           {messages?.map((message, index) => (
             <MessageItem
               key={message._id}
@@ -88,15 +92,13 @@ export const ChatContent: FC<{ chatId: Id<'conversations'> }> = ({
               senderImage={message.senderImage}
               senderName={message.senderName}
               type={message.type}
-              seen={
-                message.isCurrentUser ? getSeenMessage(message._id) : undefined
-              }
+              seen={message.isCurrentUser ? getSeenMessage(message._id) : undefined}
             />
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <ScrollBar orientation='horizontal' />
       </ScrollArea>
-
       <ChatFooter chatId={chatId} currentUserId={user?.id ?? ''} />
     </div>
   );
