@@ -41,7 +41,7 @@ export const get = query({
         membership => membership.memberId !== currentUser._id
       )[0];
 
-      const otherMember = await ctx.db.get(otherMembership?.memberId);
+      const otherMember = otherMembership ? await ctx.db.get(otherMembership.memberId) : null;
 
       return {
         ...conversation,
@@ -77,6 +77,7 @@ export const get = query({
   },
 });
 
+
 export const deleteGroup = mutation({
   args: {
     conversationId: v.id('conversations'),
@@ -104,10 +105,11 @@ export const deleteGroup = mutation({
       )
       .collect();
 
-    if (!memberships)
+    if (memberships.length <= 1) {
       throw new ConvexError(
         'Cannot delete a conversation with only one member'
       );
+    }
 
     const messages = await ctx.db
       .query('messages')
@@ -123,6 +125,7 @@ export const deleteGroup = mutation({
     await Promise.all(messages.map(message => ctx.db.delete(message._id)));
   },
 });
+
 
 export const leaveGroup = mutation({
   args: {
@@ -159,6 +162,7 @@ export const leaveGroup = mutation({
   },
 });
 
+
 export const markAsRead = mutation({
   args: {
     conversationId: v.id('conversations'),
@@ -194,6 +198,7 @@ export const markAsRead = mutation({
     });
   },
 });
+
 
 export const getConversationMembers = query({
   args: {
@@ -252,3 +257,4 @@ export const getConversationMembers = query({
     };
   },
 });
+

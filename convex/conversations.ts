@@ -5,7 +5,7 @@ import { Id } from './_generated/dataModel';
 
 export const get = query({
   args: {},
-  handler: async ctx => {
+  handler: async (ctx: QueryCtx | MutationCtx) => {
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) throw new ConvexError('Not authenticated');
@@ -23,10 +23,8 @@ export const get = query({
       .collect();
 
     const conversations = await Promise.all(
-      conversationMemberships?.map(async conversationMembership => {
-        const conversation = await ctx.db.get(
-          conversationMembership.conversationId
-        );
+      conversationMemberships.map(async conversationMembership => {
+        const conversation = await ctx.db.get(conversationMembership.conversationId);
 
         if (!conversation) {
           throw new ConvexError('Conversation not found');
@@ -40,18 +38,18 @@ export const get = query({
       conversations.map(async (conversation, index) => {
         const allConversationMemberships = await ctx.db
           .query('conversation_members')
-          .withIndex('by_conversationId', q =>
-            q.eq('conversationId', conversation?._id)
-          )
+          .withIndex('by_conversationId', q => q.eq('conversationId', conversation._id))
           .collect();
 
-        const lastMessage = await getLastMessageDetails({
-          ctx,
-          conversationId: conversation.lastMessage,
-        });
+        const lastMessage = conversation.lastMessage
+          ? await getLastMessageDetails({
+              ctx,
+              conversationId: conversation.lastMessage as Id<'messages'>, // Explicit type cast here
+            })
+          : null;
 
         const lastSeenMessage = conversationMemberships[index].lastSeenMessage
-          ? await ctx.db.get(conversationMemberships[index].lastSeenMessage)
+          ? await ctx.db.get(conversationMemberships[index].lastSeenMessage!)
           : null;
 
         const lastSeenMessageTime = lastSeenMessage
@@ -60,9 +58,7 @@ export const get = query({
 
         const unreadMessages = await ctx.db
           .query('messages')
-          .withIndex('by_conversationId', q =>
-            q.eq('conversationId', conversation._id)
-          )
+          .withIndex('by_conversationId', q => q.eq('conversationId', conversation._id))
           .filter(q => q.gt(q.field('_creationTime'), lastSeenMessageTime))
           .filter(q => q.neq(q.field('senderId'), currentUser._id))
           .collect();
@@ -74,9 +70,13 @@ export const get = query({
             ...lastMessage,
           };
         } else {
-          const otherMember = allConversationMemberships.filter(
+          const otherMember = allConversationMemberships.find(
             membership => membership.memberId !== currentUser._id
-          )[0];
+          );
+
+          if (!otherMember) {
+            throw new ConvexError('Other member not found');
+          }
 
           const otherMemberData = await ctx.db.get(otherMember.memberId);
 
@@ -99,7 +99,7 @@ const getLastMessageDetails = async ({
   conversationId,
 }: {
   ctx: QueryCtx | MutationCtx;
-  conversationId: Id<'messages'> | undefined;
+  conversationId: Id<'messages'>; // Ensure conversationId is required here
 }) => {
   if (!conversationId) {
     return null;
