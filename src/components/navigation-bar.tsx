@@ -19,6 +19,9 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProfileDialogContent from '@/components/profile-dialog-content';
+import { useUser } from '@clerk/clerk-react';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 
 type NavigationBarProps = {
   trigger: ReactNode;
@@ -26,6 +29,7 @@ type NavigationBarProps = {
 
 export const NavigationBar: FC<NavigationBarProps> = ({ trigger }) => {
   const pathname = usePathname();
+  const { user } = useUser();
 
   const menuItems = useMemo(
     () => [
@@ -34,6 +38,10 @@ export const NavigationBar: FC<NavigationBarProps> = ({ trigger }) => {
     ],
     []
   );
+  const userDetails = useQuery(api.status.get, {
+    clerkId: user?.id || "",
+});
+
 
   return (
     <>
@@ -79,7 +87,7 @@ export const NavigationBar: FC<NavigationBarProps> = ({ trigger }) => {
             <NavigationMenu orientation='vertical'>
               <DialogTrigger>
                 <Avatar>
-                  <AvatarImage src='https://github.com/shadcn.png' />
+                  <AvatarImage src={userDetails?.imageUrl || "https://github.com/shadcn.png"} />
                   <AvatarFallback>User</AvatarFallback>
                 </Avatar>
               </DialogTrigger>
@@ -100,7 +108,7 @@ export const NavigationBar: FC<NavigationBarProps> = ({ trigger }) => {
                 <NavigationMenu orientation='vertical'>
                   <DialogTrigger>
                     <Avatar>
-                      <AvatarImage src='https://github.com/shadcn.png' />
+                      <AvatarImage src={userDetails?.imageUrl || "https://github.com/shadcn.png"} />
                       <AvatarFallback>User</AvatarFallback>
                     </Avatar>
                   </DialogTrigger>
